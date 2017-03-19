@@ -1,5 +1,5 @@
 function! s:shcmd(code)
-  return join(['emacs',expand('%:p'),'--quick','--batch','--eval="']).join(a:code,line('.')).'" 2>/dev/null'
+  return join(['emacs',s:writetemp(),'--quick','--batch','--eval="']).join(a:code,line('.')).'" 2>/dev/null'
 endfunction
 
 function! s:elisp(name,format)
@@ -7,6 +7,19 @@ function! s:elisp(name,format)
         \ .'(goto-char (point-min))'
         \ .'(forward-line (1- ','))('.a:name.')'
         \ .'(while restclient-within-call (sit-for 0.05))'.a:format.'(terpri)(kill-emacs 0))']
+endfunction
+
+let s:f = tempname()
+
+augroup restclient
+  au!
+augroup END
+
+au restclient vimLeavePre * call delete(s:f)
+
+function! s:writetemp()
+  call writefile(getline(1,'$'),s:f)
+  return s:f
 endfunction
 
 command! Restclient echon system(s:shcmd(s:elisp('restclient-http-send-current',
