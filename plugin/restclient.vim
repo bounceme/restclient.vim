@@ -1,5 +1,5 @@
 function! s:shcmd(code)
-  return join(['emacs',expand('%'),'--quick','--batch','--eval="',join(a:code,line('.')),'"','2>/dev/null')
+  return join(['emacs',expand('%'),'--quick','--batch','--eval="']).join(a:code,line('.')).'" 2>/dev/null'
 endfunction
 
 function! s:elisp(name,format)
