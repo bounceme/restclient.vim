@@ -1,1 +1,5 @@
-An interactive HTTP client for Emacs in vim
+## An interactive HTTP client for Emacs in vim
+
+[restclient.el](https://github.com/pashky/restclient.el) which you can use in Vim!
+
+*there is overhead, less than you might think though, around 300ms*
