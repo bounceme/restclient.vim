@@ -1,12 +1,12 @@
 function! s:shcmd(code)
-  return join(['emacs',s:writetemp(),'--quick','--batch','--eval="']).join(a:code,line('.')).'" 2>/dev/null'
+  return join(['emacs',s:writetemp(),'--quick','--batch','--eval="']).a:code.'" 2>/dev/null'
 endfunction
 
 function! s:elisp(name,format)
-  return ['(progn (setq package-load-list ''((restclient t)))(package-initialize)(require ''restclient)(restclient-mode)'
+  return '(progn (setq package-load-list ''((restclient t)))(package-initialize)(require ''restclient)(restclient-mode)'
         \ .'(goto-char (point-min))'
-        \ .'(forward-line (1- ','))('.a:name.')'
-        \ .'(while restclient-within-call (sit-for 0.05))'.a:format.'(terpri)(kill-emacs 0))']
+        \ .'(forward-line (1- '.line('.').'))('.a:name.')'
+        \ .'(while restclient-within-call (sit-for 0.05))'.a:format.'(terpri)(kill-emacs 0))'
 endfunction
 
 let s:f = tempname()
