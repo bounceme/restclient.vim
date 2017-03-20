@@ -1,12 +1,18 @@
+if exists('g:loaded_restclient')
+  finish
+endif
+let g:loaded_restclient = 1
+
 function! s:shcmd(code)
-  return join(['emacs',s:writetemp(),'--quick','--batch','--eval="']).a:code.'" 2>/dev/null'
+  return join(['emacs',s:writetemp(),'--quick','--batch','--eval="']).a:code.'"'
 endfunction
 
 function! s:elisp(name,format)
-  return '(progn (setq package-load-list ''((restclient t)))(package-initialize)(require ''restclient)(restclient-mode)'
+  return '(progn (setq restclient-log-request nil package-load-list ''((restclient t)))'
+        \ .'(package-initialize)(require ''restclient)(restclient-mode)'
         \ .'(goto-char (point-min))'
         \ .'(forward-line (1- '.line('.').'))('.a:name.')'
-        \ .'(while restclient-within-call (sit-for 0.05))'.a:format.'(terpri)(kill-emacs 0))'
+        \ .'(while restclient-within-call (sit-for 0.05))(terpri)'.a:format.'(terpri)(kill-emacs 0))'
 endfunction
 
 let s:f = tempname()
@@ -22,5 +28,6 @@ function! s:writetemp()
   return s:f
 endfunction
 
-command! Restclient echon system(s:shcmd(s:elisp('restclient-http-send-current',
-      \ '(switch-to-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' )))
+command! Restclient echon substitute(system(s:shcmd(s:elisp('restclient-http-send-current',
+      \ '(switch-to-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))),
+      \ '\%^\_s*\_.\{-}\n\n','','')
