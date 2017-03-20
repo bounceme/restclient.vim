@@ -29,5 +29,5 @@ function! s:writetemp()
 endfunction
 
 command! Restclient echon substitute(system(s:shcmd(s:elisp('restclient-http-send-current',
-      \ '(switch-to-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))),
+      \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))),
       \ '\%^\_s*\_.\{-}\n\n','','')
