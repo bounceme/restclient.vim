@@ -28,6 +28,11 @@ function! s:writetemp()
   return s:f
 endfunction
 
+command! -register RestclientCurl call setreg(v:register,
+      \ substitute(system(s:shcmd(s:elisp('restclient-copy-curl-command',
+      \ '(princ (current-kill 0))' ))),
+      \ '\%^\_s*\_.\{-}\n\n','','')[:-2])
+
 command! Restclient echon substitute(system(s:shcmd(s:elisp('restclient-http-send-current',
       \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))),
       \ '\%^\_s*\_.\{-}\n\n','','')
