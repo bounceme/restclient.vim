@@ -4,7 +4,7 @@
 
 there is overhead, less than you might think though, around 300ms. Rather than `C-cC-c` you just run `:Restclient`.
 
-To get the equivalent as a Curl command, use `:RestclientCurl` , which will put it in the unnamed register.
+To get the equivalent as a Curl command, use `:RestclientCurl` , which will put it in the unnamed register, or any register, by using `"<reg of your choosing>:RestclientCurl<cr>` in normal mode.
 
 For installing in the comfort of your shell, just run:
 <pre>emacs --quick --batch --eval="(progn(require 'package) (package-initialize) (add-to-list 'package-archives '(\"melpa\" . \"http://melpa.milkbox.net/packages/\") t) (setq url-http-attempt-keepalives nil) (package-refresh-contents) (package-install 'restclient))"</pre>
