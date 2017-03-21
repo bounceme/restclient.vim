@@ -1,4 +1,4 @@
-## An interactive HTTP client for Emacs in vim. *alpha quality*
+## An interactive HTTP client for Emacs in vim.
 
 #### [restclient.el](https://github.com/pashky/restclient.el) which you can use in Vim!
 
