@@ -23,16 +23,18 @@ augroup END
 
 au restclient vimLeavePre * call delete(s:f)
 
+function! s:stdout(unfiltered)
+  return substitute(a:unfiltered,'\%^\_s*\_.\{-}\n\n','','')
+endfunction
+
 function! s:writetemp()
   call writefile(getline(1,'$'),s:f)
   return s:f
 endfunction
 
 command! -register RestclientCurl call setreg(<q-reg>,
-      \ substitute(system(s:shcmd(s:elisp('restclient-copy-curl-command',
-      \ '(princ (current-kill 0))' ))),
-      \ '\%^\_s*\_.\{-}\n\n','','')[:-2])
+      \ s:stdout(system(s:shcmd(s:elisp('restclient-copy-curl-command',
+      \ '(princ (current-kill 0))' ))))[:-2])
 
-command! Restclient echon substitute(system(s:shcmd(s:elisp('restclient-http-send-current',
-      \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))),
-      \ '\%^\_s*\_.\{-}\n\n','','')
+command! Restclient echon s:stdout(system(s:shcmd(s:elisp('restclient-http-send-current',
+      \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))))
