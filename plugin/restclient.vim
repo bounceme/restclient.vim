@@ -28,7 +28,7 @@ function! s:writetemp()
   return s:f
 endfunction
 
-command! -register RestclientCurl call setreg(<q-reg> isnot '' ? <q-reg> : v:register,
+command! -register RestclientCurl call setreg(<q-reg>,
       \ substitute(system(s:shcmd(s:elisp('restclient-copy-curl-command',
       \ '(princ (current-kill 0))' ))),
       \ '\%^\_s*\_.\{-}\n\n','','')[:-2])
