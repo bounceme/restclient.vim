@@ -43,5 +43,5 @@ endfunction
 
 command! -register RestclientCurl call setreg(<q-reg>, s:cURL())
 
-command! -nargs=? Restclient echon s:do('restclient-http-send-current'.matchstr(<q-args>,'\C^-raw$'),
+command! -nargs=? Restclient echon s:do('restclient-http-send-current'.matchstr(<q-args>,'\C^-raw\ze\s*$'),
       \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' )
