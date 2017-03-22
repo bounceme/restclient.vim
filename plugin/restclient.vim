@@ -27,14 +27,20 @@ function! s:stdout(unfiltered)
   return substitute(a:unfiltered,'\%^\_s*\_.\{-}\n\n','','')
 endfunction
 
+function! s:cURL()
+  return s:stdout(system(s:shcmd(s:elisp('restclient-copy-curl-command',
+        \ '(princ (current-kill 0))' ))))[:-2]
+endfunction
+
 function! s:writetemp()
   call writefile(getline(1,'$'),s:f)
   return s:f
 endfunction
 
-command! -register RestclientCurl call setreg(<q-reg>,
-      \ s:stdout(system(s:shcmd(s:elisp('restclient-copy-curl-command',
-      \ '(princ (current-kill 0))' ))))[:-2])
+command! -register RestclientCurl call setreg(<q-reg>, s:cURL())
+
+command! RestclientRaw echon s:stdout(system(s:shcmd(s:elisp('restclient-http-send-current-raw',
+      \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))))
 
 command! Restclient echon s:stdout(system(s:shcmd(s:elisp('restclient-http-send-current',
       \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))))
