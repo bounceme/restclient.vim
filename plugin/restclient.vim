@@ -39,8 +39,5 @@ endfunction
 
 command! -register RestclientCurl call setreg(<q-reg>, s:cURL())
 
-command! RestclientRaw echon s:stdout(system(s:shcmd(s:elisp('restclient-http-send-current-raw',
-      \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))))
-
-command! Restclient echon s:stdout(system(s:shcmd(s:elisp('restclient-http-send-current',
+command! -nargs=? Restclient echon s:stdout(system(s:shcmd(s:elisp('restclient-http-send-current'.matchstr(<q-args>,'\C^-raw$'),
       \ '(set-buffer \"*HTTP Response*\" )(princ (buffer-substring-no-properties (point-min)(point-max)))' ))))
