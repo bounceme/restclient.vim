@@ -32,8 +32,8 @@ augroup END
 au restclient vimLeavePre * call delete(s:f)
 
 function! s:cURL()
-  return s:do('restclient-copy-curl-command',
-        \ '(princ (current-kill 0))' )[:-2]
+  return substitute(s:do('restclient-copy-curl-command',
+        \ '(princ (current-kill 0))' ),'\_s*\%$','','')
 endfunction
 
 function! s:writetemp()
