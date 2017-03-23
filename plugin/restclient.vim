@@ -4,7 +4,7 @@ endif
 let g:loaded_restclient = 1
 
 function! s:shcmd(code)
-  return join(['emacs',s:writetemp(),'--quick','--batch','--eval="']).a:code.'"'
+  return 'emacs '.s:writetemp().' --quick --batch --eval="'.a:code.'"'
 endfunction
 
 function! s:stdout(unfiltered)
