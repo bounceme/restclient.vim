@@ -7,14 +7,14 @@ function! s:shcmd(code)
   return 'emacs --quick --batch --eval="'.a:code.'"'
 endfunction
 
-function! s:stdout(...)
+function! s:stdout(c)
   let null = &shell !~? 'sh[^\/]*$' ? ' 2> nul' : ' 2>/dev/null'
   if has('nvim')
-    return system(a:1.null)
+    return system(a:c.null)
   else
     let shell = &shellredir
     let &shellredir = substitute(shell,'\C^>%s\zs 2>&1$',null,'')
-    let [ret, &shellredir] = [call('system',a:000), shell]
+    let [ret, &shellredir] = [system(a:c), shell]
     return ret
   endif
 endfunction
