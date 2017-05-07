@@ -4,41 +4,37 @@ endif
 let g:loaded_restclient = 1
 
 function! s:shcmd(code)
-  return 'emacs '.s:writetemp().' --quick --batch --eval="'.a:code.'"'
+  return 'emacs --quick --batch --eval="'.a:code.'"'
 endfunction
 
-function! s:stdout(unfiltered)
-  return substitute(a:unfiltered,'\%^\_s*\_.\{-}\n\n','','')
+function! s:stdout(c)
+  let null = &shell !~? 'sh[^\/]*$' ? ' 2> nul' : ' 2>/dev/null'
+  if has('nvim')
+    return system(a:c.null)
+  else
+    let shell = &shellredir
+    let &shellredir = substitute(shell,'\C^>%s\zs 2>&1$',null,'')
+    let [ret, &shellredir] = [system(a:c), shell]
+    return ret
+  endif
 endfunction
 
 function! s:elisp(name,format)
   return '(progn (setq restclient-log-request nil package-load-list ''((restclient t)))'
-        \ .'(package-initialize)(require ''restclient)(restclient-mode)'
-        \ .'(goto-char (point-min))'
-        \ .'(forward-line (1- '.line('.').'))('.a:name.')'
-        \ .'(while restclient-within-call (sit-for 0.05))(terpri)'.a:format.'(terpri)(kill-emacs 0))'
+        \ .'(with-temp-buffer (insert \"'.escape(escape(escape(join(getline(1,'$'),'\n'),'\"'),'"'),'"').'\")'
+        \ . '(package-initialize)(require ''restclient)(restclient-mode)'
+        \ . '(goto-char (point-min))'
+        \ . '(forward-line (1- '.line('.').'))('.a:name.')'
+        \ . '(while restclient-within-call (sit-for 0.05))(terpri)'.a:format.'(terpri))(kill-emacs 0))'
 endfunction
 
 function! s:do(...)
-  return s:stdout(system(s:shcmd(call('s:elisp',a:000))))
+  return s:stdout(s:shcmd(call('s:elisp',a:000)))
 endfunction
-
-let s:f = tempname()
-
-augroup restclient
-  au!
-augroup END
-
-au restclient vimLeavePre * call delete(s:f)
 
 function! s:cURL()
   return substitute(s:do('restclient-copy-curl-command',
         \ '(princ (current-kill 0))' ),'\_s*\%$','','')
-endfunction
-
-function! s:writetemp()
-  call writefile(getline(1,'$'),s:f)
-  return s:f
 endfunction
 
 command! -register RestclientCurl call setreg(<q-reg>, s:cURL())
