@@ -25,7 +25,7 @@ function! s:elisp(name,format)
         \ . '(package-initialize)(require ''restclient)(restclient-mode)'
         \ . '(goto-char (point-min))'
         \ . '(forward-line (1- '.line('.').'))('.a:name.')'
-        \ . '(while restclient-within-call (sit-for 0.05))(terpri)'.a:format.'(terpri))(kill-emacs 0))'
+        \ . '(while restclient-within-call (sit-for 0.05))'.a:format.'(terpri))(kill-emacs 0))'
 endfunction
 
 function! s:do(...)
