@@ -12,9 +12,9 @@ function! s:stdout(c)
   if has('nvim')
     return system(a:c.null)
   else
-    let shell = &shellredir
-    let &shellredir = substitute(shell,'\C^>%s\zs 2>&1$',null,'')
-    let [ret, &shellredir] = [system(a:c), shell]
+    let srr = &shellredir
+    let &shellredir = substitute(srr,'\C^>%s\zs 2>&1$',null,'')
+    let [ret, &shellredir] = [system(a:c), srr]
     return ret
   endif
 endfunction
