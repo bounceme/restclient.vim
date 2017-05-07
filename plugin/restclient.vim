@@ -8,10 +8,15 @@ function! s:shcmd(code)
 endfunction
 
 function! s:stdout(...)
-  let shell = &shellredir
-  let &shellredir = substitute(shell,'\C^>%s 2>\zs&1$','/dev/null','')
-  let [ret, &shellredir] = [call('system',a:000), shell]
-  return ret
+  let null = &shell !~? 'sh[^\/]*$' ? ' 2> nul' : ' 2>/dev/null'
+  if has('nvim')
+    return system(a:1.null)
+  else
+    let shell = &shellredir
+    let &shellredir = substitute(shell,'\C^>%s\zs 2>&1$',null,'')
+    let [ret, &shellredir] = [call('system',a:000), shell]
+    return ret
+  endif
 endfunction
 
 function! s:elisp(name,format)
