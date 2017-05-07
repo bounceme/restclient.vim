@@ -7,8 +7,11 @@ function! s:shcmd(code)
   return 'emacs --quick --batch --eval="'.a:code.'"'
 endfunction
 
-function! s:stdout(unfiltered)
-  return substitute(a:unfiltered,'\%^\_s*\_.\{-}\n\n','','')
+function! s:stdout(...)
+  let shell = &shellredir
+  let &shellredir = substitute(shell,'\C^>%s 2>\zs&1$','/dev/null','')
+  let [ret, &shellredir] = [call('system',a:000), shell]
+  return ret
 endfunction
 
 function! s:elisp(name,format)
@@ -21,7 +24,7 @@ function! s:elisp(name,format)
 endfunction
 
 function! s:do(...)
-  return s:stdout(system(s:shcmd(call('s:elisp',a:000))))
+  return s:stdout(s:shcmd(call('s:elisp',a:000)))
 endfunction
 
 function! s:cURL()
