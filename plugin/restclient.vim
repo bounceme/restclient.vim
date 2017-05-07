@@ -13,7 +13,7 @@ endfunction
 
 function! s:elisp(name,format)
   return '(progn (setq restclient-log-request nil package-load-list ''((restclient t)))'
-        \ .'(with-temp-buffer (insert \"'.substitute(join(map(getline(1,'$'),'escape(v:val,"\\")'),'\\n'),'"','\\\\\\&','g').'\")'
+        \ .'(with-temp-buffer (insert \"'.escape(escape(escape(join(getline(1,'$'),'\n'),'\"'),'"'),'"').'\")'
         \ .'(package-initialize)(require ''restclient)(restclient-mode)'
         \ .'(goto-char (point-min))'
         \ .'(forward-line (1- '.line('.').'))('.a:name.')'
